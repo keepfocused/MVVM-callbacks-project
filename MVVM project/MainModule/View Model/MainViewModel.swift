@@ -10,6 +10,7 @@ import Foundation
 protocol MainViewModelProtocol {
     var updateViewData: ((ViewData) ->())? { get set }
     func startFetch()
+    func error()
 }
 
 final class MainViewModel: MainViewModelProtocol {
@@ -18,27 +19,18 @@ final class MainViewModel: MainViewModelProtocol {
     init() {
         updateViewData?(.initial)
     }
+    
+    public func error() {
+        updateViewData?(.failure(ViewData.Data(icon: "❌",
+        title: "Loading failed",
+        description: "Not working",
+        numberPhone: nil)))
+    }
         
     public func startFetch() {
-        // start loading
-        updateViewData?(.loading(ViewData.Data(icon: nil,
-                                               title: "loading...",
-                                               description: "please wait",
-                                               numberPhone: nil)))
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-            self?.updateViewData?(.success(ViewData.Data(icon: "success",
-                                                        title: "Success success",
-                                                        description: "Status OK",
-                                                        numberPhone: nil)))
-        }
-        
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-            self?.updateViewData?(.failure(ViewData.Data(icon: "failure",
-                                                        title: "Loading failed",
-                                                        description: "Not working",
-                                                        numberPhone: nil)))
-        }
+        updateViewData?(.success(ViewData.Data(icon: "✅",
+        title: "Success success",
+        description: "Status OK",
+        numberPhone: nil)))
     }
 }
